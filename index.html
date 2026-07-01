@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticktra — IT support that fixes itself</title>
+  <meta name="description" content="Ticktra resolves common IT tickets automatically via Slack and Microsoft 365 — so your engineers only deal with the work that actually needs them." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Tokens ─────────────────────────────────── */
+    :root {
+      --paper:   #F5F0E8;
+      --slate:   #2D3142;
+      --slate-60: rgba(45, 49, 66, 0.60);
+      --slate-10: rgba(45, 49, 66, 0.08);
+      --teal:    #00897B;
+      --teal-15: rgba(0, 137, 123, 0.15);
+      --teal-30: rgba(0, 137, 123, 0.30);
+      --white:   #FFFFFF;
+
+      --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+
+      --max-w: 1080px;
+      --gutter: clamp(1.25rem, 5vw, 2.5rem);
+    }
+
+    /* ─── Reset ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--slate);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display: block; }
+
+    /* ─── Layout helpers ─────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+
+    /* ─── NAV ────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--paper);
+      border-bottom: 1px solid var(--slate-10);
+      padding-block: 1rem;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    .logo-icon {
+      flex-shrink: 0;
+    }
+    .logo-wordmark {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 1.125rem;
+      letter-spacing: -0.02em;
+      color: var(--slate);
+    }
+    .nav-cta {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--teal);
+      border: 1.5px solid var(--teal);
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-pill);
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+    .nav-cta:hover {
+      background: var(--teal);
+      color: var(--white);
+    }
+
+    /* ─── HERO ───────────────────────────────────── */
+    .hero {
+      padding-top: clamp(6rem, 12vw, 9rem);
+      padding-bottom: clamp(4rem, 8vw, 7rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Signature element: animated ticket queue */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-text { max-width: 520px; }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+    }
+    h1 {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--slate);
+      margin-bottom: 1.25rem;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--teal);
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--slate-60);
+      max-width: 420px;
+      margin-bottom: 2rem;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--teal);
+      color: var(--white);
+      font-weight: 500;
+      font-size: 0.9375rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-pill);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .hero-note {
+      font-size: 0.8125rem;
+      color: var(--slate-60);
+    }
+
+    /* ─── Ticket queue animation ─────────────────── */
+    .ticket-stage {
+      position: relative;
+      height: 380px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .ticket-rail {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+      width: 100%;
+      max-width: 360px;
+    }
+    .ticket {
+      background: var(--white);
+      border: 1px solid var(--slate-10);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 2px 8px rgba(45,49,66,0.06);
+      transform: translateX(0);
+      opacity: 1;
+      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
+    }
+    .ticket.resolving {
+      transform: translateX(20px);
+      opacity: 0;
+    }
+    .ticket-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+    .ticket-icon.pw  { background: #EEF6F5; }
+    .ticket-icon.lock { background: #FFF3E8; }
+    .ticket-icon.acc { background: #EAF0FF; }
+    .ticket-icon.vpn { background: #F3F0FF; }
+    .ticket-body { flex: 1; min-width: 0; }
+    .ticket-title {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--slate);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ticket-user {
+      font-size: 0.6875rem;
+      color: var(--slate-60);
+      margin-top: 0.125rem;
+    }
+    .ticket-badge {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 500;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-pill);
+      flex-shrink: 0;
+    }
+    .badge-resolving { background: var(--teal-15); color: var(--teal); }
+    .badge-resolved  { background: #E8F5E9; color: #2E7D32; }
+    .badge-queued    { background: var(--slate-10); color: var(--slate-60); }
+
+    .check-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--teal);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .check-bar.visible { opacity: 1; }
+    .check-bar::before {
+      content: '✓';
+      font-weight: 700;
+    }
+
+    /* ─── HOW IT WORKS ───────────────────────────── */
+    .how {
+      padding-block: clamp(4rem, 8vw, 6.5rem);
+      border-top: 1px solid var(--slate-10);
+    }
+    .how-header {
+      margin-bottom: 3.5rem;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.875rem;
+      display: block;
+    }
+    .how-heading {
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--slate);
+      line-height: 1.2;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+      position: relative;
+    }
+    .step-connector { display: none; }
+    .step {
+      position: relative;
+    }
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--teal);
+      background: var(--teal-15);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.02em;
+    }
+    .step-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--slate);
+      margin-bottom: 0.625rem;
+      line-height: 1.3;
+    }
+    .step-desc {
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--slate-60);
+    }
+
+    /* ─── SOCIAL PROOF STRIP ─────────────────────── */
+    .proof {
+      padding-block: 2.5rem;
+      border-top: 1px solid var(--slate-10);
+      border-bottom: 1px solid var(--slate-10);
+    }
+    .proof-inner {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .proof-label {
+      font-size: 0.8125rem;
+      color: var(--slate-60);
+      flex-shrink: 0;
+    }
+    .stat-group {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .stat { display: flex; flex-direction: column; }
+    .stat-num {
+      font-family: var(--font-mono);
+      font-size: 1.375rem;
+      font-weight: 500;
+      color: var(--slate);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .stat-desc {
+      font-size: 0.75rem;
+      color: var(--slate-60);
+      margin-top: 0.2rem;
+    }
+
+    /* ─── WAITLIST ────────────────────────────────── */
+    .waitlist {
+      padding-block: clamp(4rem, 8vw, 6rem);
+    }
+    .waitlist-card {
+      background: var(--slate);
+      border-radius: 20px;
+      padding: clamp(2.5rem, 5vw, 4rem);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .waitlist-heading {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .waitlist-heading span { color: var(--teal); }
+    .waitlist-sub {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 1.5rem;
+    }
+    .waitlist-perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .waitlist-perks li {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.65);
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+    .waitlist-perks li::before {
+      content: '';
+      display: block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+    }
+    .tally-wrapper {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      min-height: 200px;
+    }
+    /* Tally iframe fills wrapper */
+    .tally-wrapper iframe {
+      width: 100%;
+      min-height: 160px;
+      border: none;
+      display: block;
+    }
+    /* Fallback inline form if Tally not yet configured */
+    .tally-fallback {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .tally-fallback input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.07);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      outline: none;
+      transition: border-color 0.18s ease;
+    }
+    .tally-fallback input::placeholder { color: rgba(255,255,255,0.35); }
+    .tally-fallback input:focus { border-color: var(--teal); }
+    .tally-fallback button {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: var(--teal);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 0.9375rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: opacity 0.18s ease;
+    }
+    .tally-fallback button:hover { opacity: 0.88; }
+    .tally-privacy {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────── */
+    footer {
+      padding-block: 2rem;
+      border-top: 1px solid var(--slate-10);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-copy {
+      font-size: 0.8125rem;
+      color: var(--slate-60);
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .footer-links a {
+      font-size: 0.8125rem;
+      color: var(--slate-60);
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--slate); }
+
+    /* ─── Responsive ─────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .ticket-stage { display: none; }
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .step-connector { display: none; }
+      .step { padding-right: 0; }
+      .waitlist-card {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .proof-inner { gap: 1.25rem; }
+      .stat-group { gap: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { letter-spacing: -0.025em; }
+    }
+
+    /* ─── Motion preference ──────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+      .ticket { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="/" class="logo" aria-label="Ticktra home">
+        <span class="logo-wordmark">ticktra</span>
+      </a>
+      <a href="#waitlist" class="nav-cta">Join waitlist</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <span class="hero-eyebrow">Automated IT resolution for SMEs</span>
+        <h1>Half your tickets,<br /><em>closed before you read them</em></h1>
+        <p class="hero-sub">
+          Ticktra auto-resolves L1 tickets — password resets, account lockouts, access requests — instantly via Slack. When something genuinely needs an engineer, it arrives with full context, past resolutions, and AI-suggested fixes already surfaced.
+        </p>
+        <div class="hero-actions">
+          <a href="#waitlist" class="btn-primary">
+            Get early access
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.5 7H11.5M7.5 3L11.5 7L7.5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <span class="hero-note">Free during beta · No card needed</span>
+        </div>
+      </div>
+
+      <!-- Animated ticket queue (desktop only) -->
+      <div class="ticket-stage" aria-hidden="true">
+        <div class="ticket-rail" id="ticketRail">
+          <div class="ticket" id="t1">
+            <div class="ticket-icon pw">🔑</div>
+            <div class="ticket-body">
+              <div class="ticket-title">Password reset request</div>
+              <div class="ticket-user">Sarah M. · Marketing</div>
+            </div>
+            <span class="ticket-badge badge-resolving">Resolving</span>
+          </div>
+          <div class="ticket" id="t2">
+            <div class="ticket-icon lock">🔒</div>
+            <div class="ticket-body">
+              <div class="ticket-title">Account locked out</div>
+              <div class="ticket-user">James K. · Sales</div>
+            </div>
+            <span class="ticket-badge badge-queued">Queued</span>
+          </div>
+          <div class="ticket" id="t3">
+            <div class="ticket-icon acc">📋</div>
+            <div class="ticket-body">
+              <div class="ticket-title">SharePoint access request</div>
+              <div class="ticket-user">Priya N. · Finance</div>
+            </div>
+            <span class="ticket-badge badge-queued">Queued</span>
+          </div>
+          <div class="ticket" id="t4">
+            <div class="ticket-icon vpn">🌐</div>
+            <div class="ticket-body">
+              <div class="ticket-title">VPN credentials expired</div>
+              <div class="ticket-user">Tom B. · Engineering</div>
+            </div>
+            <span class="ticket-badge badge-queued">Queued</span>
+          </div>
+        </div>
+        <div class="check-bar" id="checkBar">ticket resolved in 4 seconds · no engineer touched it</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF STRIP -->
+  <section class="proof">
+    <div class="container proof-inner">
+      <span class="proof-label">Why it matters</span>
+      <div class="stat-group">
+        <div class="stat">
+          <span class="stat-num">70%</span>
+          <span class="stat-desc">of IT tickets are L1 — eating engineer time that should go elsewhere</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">23 min</span>
+          <span class="stat-desc">of engineer time lost per ticket before it's even looked at</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">&lt; 30s</span>
+          <span class="stat-desc">automated resolution time — no engineer, no queue, no wait</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="container">
+      <div class="how-header">
+        <span class="section-label">How it works</span>
+        <h2 class="how-heading">How a ticket gets handled.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3 class="step-title">Staff ask in Slack</h3>
+          <p class="step-desc">Employees raise issues the way they already work — a message in Slack. No portal, no ticket form, no waiting.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3 class="step-title">Ticktra resolves it</h3>
+          <p class="step-desc">The AI reads the request, verifies the user through Microsoft 365 and Entra ID, and carries out the fix — password reset, account unlock, access grant — automatically.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3 class="step-title">Escalated, never cold</h3>
+          <p class="step-desc">Anything Ticktra can't resolve goes to your engineers with the full ticket and matching fixes from the built-in knowledge base — so they pick up from a head start, not a blank page.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAITLIST -->
+  <section class="waitlist" id="waitlist">
+    <div class="container">
+      <div class="waitlist-card">
+        <div class="waitlist-left">
+          <h2 class="waitlist-heading">Built for teams who've<br /><span>outgrown the inbox</span></h2>
+          <p class="waitlist-sub">
+            If you're managing IT support over Slack messages and shared email, you're losing hours every week. We're onboarding a small group of SMEs in beta — join the list to secure your spot.
+          </p>
+          <ul class="waitlist-perks">
+            <li>Free access during the beta period</li>
+            <li>Works with your existing Slack workspace</li>
+            <li>Microsoft 365 and Entra ID native</li>
+            <li>Setup takes under an hour</li>
+          </ul>
+        </div>
+        <div class="waitlist-right">
+          <div class="tally-wrapper" id="tallyWrapper">
+            <!--
+              TALLY FORM
+              ──────────────────────────────────────────────
+              Once you have your Tally form ID, replace this
+              fallback with:
+
+              <iframe
+                data-tally-src="https://tally.so/embed/YOUR_FORM_ID?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                loading="lazy"
+                width="100%"
+                height="220"
+                frameborder="0"
+                marginheight="0"
+                marginwidth="0"
+                title="Ticktra waitlist"
+              ></iframe>
+              <script>
+                var d=document,w="https://tally.so/widgets/embed.js",
+                v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};
+                if("undefined"!=typeof Tally)v();
+                else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}
+              </script>
+
+              Until then, the form below captures entries.
+              ──────────────────────────────────────────────
+            -->
+            <div class="tally-fallback" id="waitlistForm">
+              <input type="text" id="wlName" placeholder="Your name" autocomplete="name" />
+              <input type="email" id="wlEmail" placeholder="Work email" autocomplete="email" />
+              <input type="text" id="wlCompany" placeholder="Company name" />
+              <button onclick="submitWaitlist()">Join the waitlist →</button>
+              <p class="tally-privacy">No spam. Unsubscribe any time.</p>
+            </div>
+            <div id="waitlistThanks" style="display:none; color: rgba(255,255,255,0.75); font-size:0.9375rem; line-height:1.6; padding: 0.5rem 0;">
+              <strong style="color:#fff; font-size:1.0625rem;">You're on the list.</strong><br />
+              We'll be in touch when your spot opens. Keep an eye on your inbox.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <span class="footer-copy">© 2025 Ticktra · ticktra.io</span>
+    </div>
+  </footer>
+
+  <script>
+    /* ─── Ticket queue animation ──────────────────── */
+    (function () {
+      const tickets = [
+        { id: 't1', badgeClass: 'badge-resolving', badgeText: 'Resolving' },
+        { id: 't2', badgeClass: 'badge-queued',    badgeText: 'Queued' },
+        { id: 't3', badgeClass: 'badge-queued',    badgeText: 'Queued' },
+        { id: 't4', badgeClass: 'badge-queued',    badgeText: 'Queued' },
+      ];
+
+      const checkBar = document.getElementById('checkBar');
+      let cycle = 0;
+
+      function runCycle() {
+        const active = document.getElementById(tickets[0].id);
+        const next   = document.getElementById(tickets[1].id);
+        if (!active || !next) return;
+
+        // Flash "Resolving" badge on active
+        const activeBadge = active.querySelector('.ticket-badge');
+        activeBadge.textContent = 'Resolving…';
+        activeBadge.className   = 'ticket-badge badge-resolving';
+
+        // After 1.8s, mark resolved and slide out
+        setTimeout(() => {
+          activeBadge.textContent = '✓ Resolved';
+          activeBadge.className   = 'ticket-badge badge-resolved';
+
+          setTimeout(() => {
+            active.classList.add('resolving');
+            checkBar.classList.add('visible');
+
+            // Promote next ticket to "Resolving"
+            const nextBadge = next.querySelector('.ticket-badge');
+            nextBadge.textContent = 'Resolving';
+            nextBadge.className   = 'ticket-badge badge-resolving';
+
+            // After animation, reset and loop
+            setTimeout(() => {
+              checkBar.classList.remove('visible');
+
+              // Reset active ticket
+              active.classList.remove('resolving');
+              activeBadge.textContent = 'Queued';
+              activeBadge.className   = 'ticket-badge badge-queued';
+
+              // Move active ticket to end of rail
+              const rail = document.getElementById('ticketRail');
+              rail.appendChild(active);
+
+              // Rotate ticket array
+              tickets.push(tickets.shift());
+
+              // Schedule next cycle
+              setTimeout(runCycle, 1200);
+            }, 900);
+          }, 600);
+        }, 1800);
+      }
+
+      // Start after short delay
+      setTimeout(runCycle, 1400);
+    })();
+
+    /* ─── Waitlist fallback form ─────────────────── */
+    function submitWaitlist() {
+      const name    = document.getElementById('wlName').value.trim();
+      const email   = document.getElementById('wlEmail').value.trim();
+      const company = document.getElementById('wlCompany').value.trim();
+
+      if (!email || !email.includes('@')) {
+        document.getElementById('wlEmail').focus();
+        return;
+      }
+
+      // Wire this to your real backend / Tally form endpoint
+      // For now, show thank you state
+      document.getElementById('waitlistForm').style.display  = 'none';
+      document.getElementById('waitlistThanks').style.display = 'block';
+
+      // Optional: log to console for testing
+      console.log('Waitlist submission:', { name, email, company });
+    }
+
+    // Allow Enter key in form fields
+    document.querySelectorAll('.tally-fallback input').forEach(function(input) {
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') submitWaitlist();
+      });
+    });
+  </script>
+
+</body>
+</html>
