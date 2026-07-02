@@ -1872,6 +1872,7 @@ function Landing({goToAuth}) {
   return (
     <div style={{minHeight:'100vh',background:'var(--bg)',animation:'fadeIn 0.25s ease'}}>
       <style>{`@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}`}</style>
+
       {/* NAV */}
       <nav style={{position:'sticky',top:0,zIndex:100,background:'rgba(245,240,232,0.92)',backdropFilter:'blur(10px)',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',padding:'0 40px',height:60,gap:24}}>
         <div style={{display:'flex',alignItems:'center',gap:10,flex:1}}>
@@ -1888,34 +1889,48 @@ function Landing({goToAuth}) {
       </nav>
 
       {/* HERO */}
-      <div style={{maxWidth:700,margin:'80px auto 0',padding:'0 24px',textAlign:'center'}}>
-        <div style={{display:'inline-flex',alignItems:'center',gap:7,background:'var(--teal-light)',border:'1px solid rgba(0,137,123,0.2)',color:'var(--teal-dark)',fontSize:12.5,fontWeight:500,padding:'5px 12px',borderRadius:99,marginBottom:24}}>✦ Now in early access</div>
-        <h1 style={{fontSize:52,fontWeight:600,letterSpacing:'-2px',lineHeight:1.1,color:'var(--slate)',marginBottom:20}}>IT support that<br/><span style={{color:'var(--teal)'}}>handles itself</span></h1>
-        <p style={{fontSize:18,color:'var(--text-muted)',lineHeight:1.6,marginBottom:36,maxWidth:520,marginLeft:'auto',marginRight:'auto'}}>Ticktra resolves password resets, account lockouts, and access requests automatically — so your IT team can focus on work that actually needs them.</p>
-        <div style={{display:'flex',gap:12,justifyContent:'center',marginBottom:60}}>
+      <div style={{maxWidth:720,margin:'80px auto 0',padding:'0 24px',textAlign:'center'}}>
+        <div style={{display:'inline-flex',alignItems:'center',gap:7,background:'var(--teal-light)',border:'1px solid rgba(0,137,123,0.2)',color:'var(--teal-dark)',fontSize:12.5,fontWeight:500,padding:'5px 12px',borderRadius:99,marginBottom:28}}>✦ Now in early access</div>
+        <h1 style={{fontSize:54,fontWeight:600,letterSpacing:'-2.5px',lineHeight:1.08,color:'var(--slate)',marginBottom:22}}>Less L1 noise.<br/><span style={{color:'var(--teal)'}}>More time for real problems.</span></h1>
+        <p style={{fontSize:18,color:'var(--text-muted)',lineHeight:1.65,marginBottom:40,maxWidth:520,marginLeft:'auto',marginRight:'auto'}}>Ticktra resolves routine IT requests automatically — password resets, account unlocks, access requests — before they ever reach your team.</p>
+        <div style={{display:'flex',gap:12,justifyContent:'center',marginBottom:80}}>
           <button onClick={()=>goToAuth('signup')} style={{background:'var(--teal)',color:'white',padding:'13px 28px',borderRadius:'var(--radius)',fontSize:15,fontWeight:500,cursor:'pointer',border:'none',fontFamily:'var(--font)'}}>Get started free</button>
           <button onClick={()=>goToAuth('signup')} style={{background:'var(--surface)',border:'1px solid var(--border)',color:'var(--text)',padding:'13px 28px',borderRadius:'var(--radius)',fontSize:15,fontWeight:500,cursor:'pointer',fontFamily:'var(--font)'}}>See a demo →</button>
         </div>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,color:'var(--text-muted)',fontSize:13,padding:'16px 24px',background:'var(--surface)',borderRadius:'var(--radius-lg)',border:'1px solid var(--border)',maxWidth:520,margin:'0 auto 80px'}}>
-          {['Acme Corp','FinTech Ltd','Orbit Systems','Nexus HQ'].map(c=><span key={c} style={{background:'var(--bg)',border:'1px solid var(--border)',borderRadius:99,padding:'3px 10px',fontSize:12,fontWeight:500}}>{c}</span>)}
-          <span style={{marginLeft:8}}>Trusted by IT teams at 40+ companies</span>
-        </div>
       </div>
 
-      {/* FEATURES */}
+      {/* TOP 3 FEATURE TILES */}
       <div style={{background:'var(--surface)',borderTop:'1px solid var(--border)',borderBottom:'1px solid var(--border)',padding:'72px 40px'}}>
         <div style={{maxWidth:960,margin:'0 auto'}}>
           <div style={{fontSize:11.5,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--teal)',marginBottom:12,textAlign:'center'}}>What Ticktra does</div>
-          <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-0.8px',textAlign:'center',marginBottom:48}}>Less ticket queue. More actual IT work.</h2>
+          <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-0.8px',textAlign:'center',marginBottom:52}}>Automation where it matters most</h2>
           <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:24}}>
             {[
-              {icon:'🤖',title:'AI resolves L1 tickets automatically',desc:'Password resets, account unlocks, and access requests handled in seconds — no human needed. Staff get answers without waiting.'},
-              {icon:'🔐',title:'Microsoft 365 + Entra ID native',desc:'Deep integration with the tools your team already uses. Ticktra acts directly on Entra ID to resolve issues, not just log them.'},
-              {icon:'💬',title:'Slack-first experience',desc:'Staff raise and track tickets without leaving Slack. No new tools to learn, no portals to remember. IT support where people already are.'},
-            ].map(f=>(
-              <div key={f.title} style={{padding:28,border:'1px solid var(--border)',borderRadius:'var(--radius-lg)',background:'var(--bg)'}}>
-                <div style={{width:44,height:44,background:'var(--teal-light)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,marginBottom:16}}>{f.icon}</div>
-                <div style={{fontSize:15,fontWeight:600,marginBottom:8}}>{f.title}</div>
+              {
+                icon:'🔐',
+                tag:'Layer 1',
+                title:'Identity resolution, instantly',
+                desc:'Password resets and account unlocks triggered directly via Azure AD or Okta — resolved in seconds, no agent needed.',
+              },
+              {
+                icon:'🔄',
+                tag:'Layer 1',
+                title:'Onboarding & offboarding on autopilot',
+                desc:'HR triggers kick off full onboarding and offboarding checklists automatically. New starters are ready on day one without an IT ticket.',
+              },
+              {
+                icon:'🧠',
+                tag:'Layer 2',
+                title:'AI-assisted diagnosis for engineers',
+                desc:'Describe the issue — Ticktra surfaces similar past tickets, resolutions, and runbooks so engineers spend less time searching and more time fixing.',
+              },
+            ].map((f,i)=>(
+              <div key={f.title} style={{padding:28,border:'1px solid',borderColor:i===0?'var(--teal)':'var(--border)',borderRadius:'var(--radius-lg)',background:i===0?'var(--teal-light)':'var(--bg)',position:'relative',overflow:'hidden'}}>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:20}}>
+                  <div style={{width:44,height:44,background:i===0?'white':'var(--surface)',borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,border:'1px solid var(--border)'}}>{f.icon}</div>
+                  <span style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:0.8,color:i===0?'var(--teal-dark)':'var(--text-muted)',background:i===0?'rgba(0,137,123,0.12)':'var(--surface)',padding:'3px 8px',borderRadius:99,border:'1px solid',borderColor:i===0?'rgba(0,137,123,0.2)':'var(--border)'}}>{f.tag}</span>
+                </div>
+                <div style={{fontSize:15,fontWeight:600,marginBottom:10,color:'var(--slate)'}}>{f.title}</div>
                 <div style={{fontSize:13.5,color:'var(--text-muted)',lineHeight:1.65}}>{f.desc}</div>
               </div>
             ))}
@@ -1923,26 +1938,71 @@ function Landing({goToAuth}) {
         </div>
       </div>
 
-      {/* PRICING */}
-      <div style={{padding:'72px 40px',maxWidth:840,margin:'0 auto'}}>
-        <div style={{fontSize:11.5,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--teal)',marginBottom:12,textAlign:'center'}}>Pricing</div>
-        <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-0.8px',textAlign:'center',marginBottom:48}}>Simple, predictable pricing</h2>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
-          {[
-            {name:'Starter',price:'£49',period:'per month · up to 100 users',features:['AI L1 ticket resolution','Microsoft 365 integration','Slack bot included','Knowledge base','Email support'],featured:false},
-            {name:'Pro',price:'£99',period:'per month · up to 500 users',features:['Everything in Starter','Entra ID automation','SLA management','Analytics dashboard','Priority support'],featured:true},
-          ].map(p=>(
-            <div key={p.name} style={{border:'1px solid',borderColor:p.featured?'var(--teal)':'var(--border)',borderRadius:'var(--radius-lg)',padding:32,background:p.featured?'var(--slate)':'var(--surface)',color:p.featured?'white':'var(--text)'}}>
-              <div style={{fontSize:13,fontWeight:600,textTransform:'uppercase',letterSpacing:0.5,marginBottom:8,color:p.featured?'rgba(255,255,255,0.5)':'var(--text-muted)'}}>{p.name}</div>
-              <div style={{fontSize:40,fontWeight:600,letterSpacing:'-1.5px',marginBottom:4}}>{p.price}</div>
-              <div style={{fontSize:13,color:p.featured?'rgba(255,255,255,0.4)':'var(--text-muted)',marginBottom:24}}>{p.period}</div>
-              <ul style={{listStyle:'none',display:'flex',flexDirection:'column',gap:10,marginBottom:28}}>
-                {p.features.map(f=><li key={f} style={{fontSize:13.5,display:'flex',alignItems:'center',gap:8,color:p.featured?'rgba(255,255,255,0.85)':'var(--text)'}}><span style={{color:p.featured?'#4DD0C4':'var(--teal)',fontWeight:600}}>✓</span>{f}</li>)}
-              </ul>
-              <button onClick={()=>goToAuth('signup')} style={{width:'100%',padding:'11px',background:p.featured?'var(--teal)':'var(--bg)',color:p.featured?'white':'var(--text)',border:p.featured?'none':'1px solid var(--border)',borderRadius:'var(--radius)',fontSize:14,fontWeight:500,cursor:'pointer',fontFamily:'var(--font)'}}>Get started</button>
+      {/* TWO LAYER CARDS */}
+      <div style={{padding:'72px 40px',maxWidth:900,margin:'0 auto'}}>
+        <div style={{fontSize:11.5,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--teal)',marginBottom:12,textAlign:'center'}}>How it works</div>
+        <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-0.8px',textAlign:'center',marginBottom:48}}>Two layers. One platform.</h2>
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
+
+          {/* Layer 1 */}
+          <div style={{border:'2px solid var(--teal)',borderRadius:'var(--radius-lg)',overflow:'hidden'}}>
+            <div style={{background:'var(--teal)',padding:'20px 28px',display:'flex',alignItems:'center',gap:16}}>
+              <div style={{width:40,height:40,background:'rgba(255,255,255,0.15)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',fontSize:18}}>⚡</div>
+              <div>
+                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'rgba(255,255,255,0.6)',marginBottom:2}}>Layer 01</div>
+                <div style={{fontSize:17,fontWeight:600,color:'white'}}>Automated Resolution — 1st Line</div>
+              </div>
             </div>
-          ))}
+            <div style={{background:'var(--surface)',padding:'24px 28px'}}>
+              <ul style={{listStyle:'none',display:'flex',flexDirection:'column',gap:14}}>
+                {[
+                  'Password resets & account unlocks via identity provider integration (Azure AD, Okta)',
+                  'Software installation requests triggered through self-service portal',
+                  'Common error troubleshooting using decision-tree flows (VPN not connecting, printer issues)',
+                  'Status page checks — auto-respond if an outage is already known',
+                  'Onboarding/offboarding checklists run automatically based on HR triggers',
+                ].map(item=>(
+                  <li key={item} style={{display:'flex',alignItems:'flex-start',gap:12,fontSize:14,color:'var(--text)',lineHeight:1.5}}>
+                    <span style={{width:20,height:20,background:'var(--teal-light)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1,fontSize:11,color:'var(--teal)',fontWeight:700}}>✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Layer 2 */}
+          <div style={{border:'1px solid var(--border)',borderRadius:'var(--radius-lg)',overflow:'hidden'}}>
+            <div style={{background:'var(--slate)',padding:'20px 28px',display:'flex',alignItems:'center',gap:16}}>
+              <div style={{width:40,height:40,background:'rgba(255,255,255,0.1)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',fontSize:18}}>🧠</div>
+              <div>
+                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'rgba(255,255,255,0.4)',marginBottom:2}}>Layer 02</div>
+                <div style={{fontSize:17,fontWeight:600,color:'white'}}>Engineer Support Hub — 2nd & 3rd Line</div>
+              </div>
+            </div>
+            <div style={{background:'var(--surface)',padding:'24px 28px'}}>
+              <ul style={{listStyle:'none',display:'flex',flexDirection:'column',gap:14}}>
+                {[
+                  'Company knowledge base — past tickets, resolutions, internal documentation, runbooks',
+                  'AI-assisted diagnosis — engineer describes the issue, system surfaces similar past tickets and suggested fixes',
+                ].map(item=>(
+                  <li key={item} style={{display:'flex',alignItems:'flex-start',gap:12,fontSize:14,color:'var(--text)',lineHeight:1.5}}>
+                    <span style={{width:20,height:20,background:'var(--bg)',border:'1px solid var(--border)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,marginTop:1,fontSize:11,color:'var(--slate)',fontWeight:700}}>✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
         </div>
+      </div>
+
+      {/* CTA BANNER */}
+      <div style={{background:'var(--slate)',margin:'0 40px 72px',borderRadius:'var(--radius-lg)',padding:'48px 40px',textAlign:'center',maxWidth:880,marginLeft:'auto',marginRight:'auto'}}>
+        <h2 style={{fontSize:28,fontWeight:600,color:'white',letterSpacing:'-0.5px',marginBottom:12}}>Ready to cut your L1 ticket volume?</h2>
+        <p style={{fontSize:15,color:'rgba(255,255,255,0.5)',marginBottom:28}}>Get set up in minutes. No credit card required.</p>
+        <button onClick={()=>goToAuth('signup')} style={{background:'var(--teal)',color:'white',padding:'13px 32px',borderRadius:'var(--radius)',fontSize:15,fontWeight:500,cursor:'pointer',border:'none',fontFamily:'var(--font)'}}>Start for free</button>
       </div>
 
       {/* FOOTER */}
